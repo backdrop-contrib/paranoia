@@ -1,5 +1,5 @@
 paranoia.module is for all the good sysadmins out there who think
-that allowing random CMS admins to execute PHP of there choice is not
+that allowing random CMS admins to execute PHP of their choice is not
 a safe idea.
 
 What it will do is the following:
@@ -11,8 +11,8 @@ What it will do is the following:
 - Disable disabling this module. Yes, that's right you need to go 
   to the database to get rid of it again.
 
-To take full advantage of this module you need to delete the PHP
-filter from the standard input format.
+To take full advantage of this module you need to delete the standard
+PHP filter at admin/filters.
 
 Author
 
