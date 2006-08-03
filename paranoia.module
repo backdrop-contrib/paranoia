@@ -14,6 +14,10 @@ function paranoia_form_alter($form_id, &$form) {
     case 'user_admin_perm':
       // Do not allow any user safe user #1 to enter PHP anywhere
       unset($form['permission']['use PHP for block visibility']);
+      foreach (element_children($form['checkboxes']) as $rid) {
+        unset($form['checkboxes'][$rid]['use PHP for block visibility']);
+        unset($form['checkboxes'][$rid]['#options']['use PHP for block visibility']);
+      }
       break;
     case 'filter_admin_format_form':
       // Disable creation of input formats that use the PHP filter
