@@ -9,7 +9,7 @@ What it will do is the following:
 - Disable creation of input formats that use the PHP filter.
 - Disable editing the user #1 account.
 - Disable disabling this module. Yes, that's right you need to go 
-  to the database to get rid of it again.
+  to the database to get rid of it again. It is also not shown as being installed.
 
 To take full advantage of this module you need to delete the standard
 PHP filter at admin/filters.
