@@ -33,6 +33,10 @@ function paranoia_form_alter($form_id, &$form) {
         unset($form['delete'], $form['account']['mail'], $form['account']['pass'], $form['account']['status']);
       }
       break;
+    case 'block_admin_configure':
+      unset($form['page_vis_settings']['visibility']['#options'][2]);
+      $form['page_vis_settings']['pages']['#description'] = t("Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are <em>blog</em> for the blog page and <em>blog/*</em> for every personal blog. <em>&lt;front&gt;</em> is the front page.");
+      break;
   }
 
 }
