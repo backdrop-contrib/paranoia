@@ -1,4 +1,3 @@
 ; $Id$
 name = Paranoia
 description = "Disallows usage of PHP code from inside Drupal and tampering with the uid = 1 account. Remember to delete the PHP input filter from the default input format."
-version = VERSION
