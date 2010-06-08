@@ -5,6 +5,7 @@
  * - Disables PHP block visibility permission and gives status error if a role has this permission.
  * - Disables the PHP module.
  * - Hides the PHP and paranoia modules from the modules page.
+ * - Prevents user/1 editing which could give access to abitrary contrib module php execution.
  */
 
 
@@ -29,6 +30,19 @@ function paranoia_form_alter(&$form, $form_state, $form_id) {
         _paranoia_hide_module($form, $module);
       }
       break;
+
+    case 'user_profile_form': // Prevent modifying user/1
+      if ($form['#uid'] === '1') {
+        global $user;
+        // Allow user/1 to edit own details.
+        if ($user->uid != 1) {
+          drupal_set_message('You must login as this user (user/1) to modify the email address and password for this account.');
+          $form['account']['mail']['#access'] = FALSE;
+          $form['account']['pass']['#access'] = FALSE;
+        }
+      }
+      break;
+
   }
 }
 
