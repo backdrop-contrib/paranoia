@@ -13,14 +13,13 @@
  */
 function paranoia_form_alter(&$form, $form_state, $form_id) {
   switch ($form_id) {
-    case 'user_admin_perm': // Disable PHP Blocks
-      unset($form['permission']['use PHP for block visibility']);
-      foreach (element_children($form['checkboxes']) as $rid) {
-        foreach ($form['checkboxes'][$rid]['#default_value'] as $key => $value) {
-          if ($value == 'use PHP for block visibility') {
-          }
+    case 'user_admin_perm': // Disable PHP input
+      $hide_permissions = module_invoke_all('paranoia_revoke');
+      foreach ($hide_permissions as $hidden) {
+        unset($form['permission'][$hidden]);
+        foreach (element_children($form['checkboxes']) as $rid) {
+          unset($form['checkboxes'][$rid]['#options'][$hidden]);
         }
-        unset($form['checkboxes'][$rid]['#options']['use PHP for block visibility']);
       }
       break;
 
@@ -57,13 +56,14 @@ function paranoia_requirements($phase) {
     // Ensure that no roles have permission to use PHP for block visibility.
     module_load_include('inc', 'user', 'user.admin');
     $form = user_admin_perm($form_state);
+    $hide_permissions = module_invoke_all('paranoia_revoke');
     foreach (element_children($form['checkboxes']) as $rid) {
-      if (in_array('use PHP for block visibility', $form['checkboxes'][$rid]['#default_value'])) {
+      if (count(array_intersect($hide_permissions, $form['checkboxes'][$rid]['#default_value']))) {
         $requirements['paranoia'] = array(
           'title' => t('Paranoia'),
-          'description' => t('A user role has permission to use PHP for block visibility.  Resubmit your <a href="@admin/user/permissions">user permissions</a> to close this security hole.', array('@admin/user/permissions' => url('admin/user/permissions'))),
+          'description' => t('At least one user role has permission to input PHP. Resubmit your <a href="@admin/user/permissions">user permissions</a> to close this security hole.', array('@admin/user/permissions' => url('admin/user/permissions'))),
           'severity' => REQUIREMENT_ERROR,
-          );
+        );
       }
     }
     // Ensure the PHP module is not enabled.
@@ -83,4 +83,18 @@ function paranoia_requirements($phase) {
  */
 function paranoia_paranoia_hide() {
   return array('php', 'paranoia');
+}
+
+/**
+ * Implementation of hook_paranoia_revoke().
+ */
+function paranoia_paranoia_revoke() {
+  return array(
+    // block module
+    'use PHP for block visibility',
+    // content module (in CCK)
+    'Use PHP input for field settings (dangerous - grant with care)',
+    // webform module
+    'use PHP for additional processing',
+  );
 }
