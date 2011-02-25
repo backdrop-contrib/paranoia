@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * - Disables PHP block visibility permission and gives status error if a role has this permission.
