@@ -1,4 +1,4 @@
 name = Paranoia
-description = Protects the site from insecure configurations.
+description = Protects a site from some insecure configurations.
 core = 7.x
 

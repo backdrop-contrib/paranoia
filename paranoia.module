@@ -15,7 +15,7 @@
  * Hide Paranoia and PHP modules from module admin form.
  */
 function paranoia_form_system_modules_alter(&$form, &$form_state) {
-  $hidden_modules = module_invoke_all('paranoia_hide');
+  $hidden_modules = module_invoke_all('paranoia_hide_modules');
   foreach ($hidden_modules as $module => $package) {
     // Unset instead of using #access because #access => FALSE shows an empty
     // table row.
@@ -59,11 +59,97 @@ function paranoia_requirements($phase) {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Hides permissions considered risky by hook_paranoia_hide_permissions().
+ */
+function paranoia_form_user_admin_permissions_alter(&$form, &$form_state) {
+  $banned_permissions = module_invoke_all('paranoia_hide_permissions');
+  foreach ($banned_permissions as $permission) {
+    if (isset($form['permission'][$permission])) {
+      unset($form['permission'][$permission]);
+    }
+    foreach ($form['checkboxes'] as $index=>$elements) {
+      if (isset($elements['#options'][$permission])) {
+       unset($form['checkboxes'][$index]['#options'][$permission]);
+      }
+    }
+  }
+  $form['#validate'][] = 'paranoia_permissions_validate';
+}
+
+/**
+ * Form validate function to prevent granting risky permissions to
+ * anonymous/authenticated roles.
+ *
+ * @see paranoia_form_user_admin_permissions_alter().
+ */
+function paranoia_permissions_validate($form, &$form_state) {
+  $permissions = module_invoke_all('permission');
+  foreach ($permissions as $machine_name => $attributes) {
+    if (!empty($attributes['restrict access'])) {
+      if (!empty($form_state['values'][1][$machine_name])) {
+        form_set_error('1][' . $machine_name, t('The permission %name can affect site security and should not be granted to anonymous users.', array('%name' => $attributes['title'])));
+      }
+      if (!empty($form_state['values'][2][$machine_name])) {
+        form_set_error('2][' . $machine_name, t('The permission %name can affect site security and should not be granted to authenticated users.', array('%name' => $attributes['title'])));
+      }
+
+    }
+  }
+
+}
+
+/**
+ * Implements hook_paranoia_hide_permissions().
+ *
+ * On behalf of Drupal Core.
+ */
+function paranoia_paranoia_hide_permissions() {
+  return array(
+    'use PHP for settings',
+    'use text format php_code',
+  );
+}
+
+/**
  * Implements hook_paranoia_hide().
  */
-function paranoia_paranoia_hide() {
+function paranoia_paranoia_hide_modules() {
   return array(
     'php' => 'Core',
     'paranoia' => 'Other',
   );
+}
+
+/**
+ * Implements hook_paranoia_hid_permissions().
+ * On behalf of rules.module.
+ */
+function rules_paranoia_hide_permissions() {
+  return array('bypass rules access');
+}
+
+/**
+ * Implements hook_paranoia_hid_permissions().
+ * On behalf of cck.module.
+ */
+function cck_paranoia_hide_permissions() {
+  return array('Use PHP input for field settings (dangerous - grant with care)');
+}
+
+/**
+ * Implements hook_paranoia_hid_permissions().
+ * On behalf of devel.module.
+ */
+function devel_paranoia_hide_permissions() {
+  return array('execute php code');
+}
+
+/**
+ * Implements hook_paranoia_hid_permissions().
+ * On behalf of googleanalytics.module.
+ */
+function google_analytics_paranoia_hide_permissions() {
+  return array('use PHP for tracking visibility');
 }
