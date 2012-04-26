@@ -25,6 +25,20 @@ function paranoia_form_system_modules_alter(&$form, &$form_state) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ *
+ * Disable executing PHP setting in VBO.
+ */
+function paranoia_form_views_ui_config_item_form_alter(&$form, &$form_state) {
+  if ($form['#section'] == 'page-field-views_bulk_operations') {
+    $form['options']['vbo']['operations']['action::views_bulk_operations_script_action']['selected']['#default_value'] = FALSE;
+    $form['options']['vbo']['operations']['action::views_bulk_operations_script_action']['selected']['#value'] = FALSE;
+    $form['options']['vbo']['operations']['action::views_bulk_operations_script_action']['selected']['#disabled'] = TRUE;
+
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
  */
 function paranoia_form_user_profile_form_alter(&$form, &$form_state) {
   if ($form_state['user']->uid === '1') {
