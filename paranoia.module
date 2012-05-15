@@ -81,7 +81,7 @@ function paranoia_form_user_admin_permissions_alter(&$form, &$form_state) {
   $banned_permissions = module_invoke_all('paranoia_hide_permissions');
   foreach ($banned_permissions as $permission) {
     if (isset($form['permission'][$permission])) {
-      $form['permission'][$permission]['#markup'] .= . ' ' . t('<strong>Disabled by paranoia module.<strong>');
+      $form['permission'][$permission]['#markup'] .= ' ' . t('<strong>Disabled by paranoia module.<strong>');
     }
     foreach ($form['checkboxes'] as $index => $elements) {
       if (isset($elements['#options'][$permission])) {
