@@ -39,5 +39,4 @@ function paranoia_drush_sql_sync_sanitize($site) {
     dt('Blocked users were deleted, now lets delete their associated roles.'),
     "DELETE users_roles FROM users_roles LEFT JOIN users ON users_roles.uid = users.uid WHERE users.uid IS NULL;");
   // @TODO truncate all cache* tables.
-  asdf();
  }
