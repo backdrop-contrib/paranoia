@@ -147,7 +147,7 @@ function paranoia_paranoia_hide_modules() {
 }
 
 /**
- * Implements hook_paranoia_hid_permissions().
+ * Implements hook_paranoia_hide_permissions().
  * On behalf of rules.module.
  */
 function rules_paranoia_hide_permissions() {
@@ -155,7 +155,7 @@ function rules_paranoia_hide_permissions() {
 }
 
 /**
- * Implements hook_paranoia_hid_permissions().
+ * Implements hook_paranoia_hide_permissions().
  * On behalf of cck.module.
  */
 function cck_paranoia_hide_permissions() {
@@ -163,7 +163,7 @@ function cck_paranoia_hide_permissions() {
 }
 
 /**
- * Implements hook_paranoia_hid_permissions().
+ * Implements hook_paranoia_hide_permissions().
  * On behalf of devel.module.
  */
 function devel_paranoia_hide_permissions() {
@@ -171,9 +171,17 @@ function devel_paranoia_hide_permissions() {
 }
 
 /**
- * Implements hook_paranoia_hid_permissions().
+ * Implements hook_paranoia_hide_permissions().
  * On behalf of googleanalytics.module.
  */
 function google_analytics_paranoia_hide_permissions() {
   return array('use PHP for tracking visibility');
+}
+
+/**
+ * Implements hook_paranoia_hide_permissions().
+ * On behalf of bueditor.module.
+ */
+function bueditor_paranoia_hide_permissions() {
+  return array('administer bueditor');
 }
