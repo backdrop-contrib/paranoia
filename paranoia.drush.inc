@@ -23,9 +23,12 @@ function paranoia_drush_sql_sync_sanitize($site) {
   drush_sql_register_post_sync_op('history',
     dt('Remove history, which contains info on where users have browsed on a site.'),
     "TRUNCATE history;");
-  drush_sql_register_post_sync_op('watchdog',
-    dt('Watchdog usually contains user id, IP, e-mail addresses, filesystem paths.'),
-    "TRUNCATE watchdog;");
+  // Since people may not enable the dblog module, ensure it exists first.
+  if (db_table_exists('watchdog')) {
+    drush_sql_register_post_sync_op('watchdog',
+      dt('Watchdog usually contains user id, IP, e-mail addresses, filesystem paths.'),
+      "TRUNCATE watchdog;");
+  }
   drush_sql_register_post_sync_op('authmap',
     dt('Authmap correlates Drupal accounts to external services. The map may contain private data like emails.'),
     "TRUNCATE authmap;");
