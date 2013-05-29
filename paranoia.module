@@ -174,7 +174,7 @@ function devel_paranoia_hide_permissions() {
  * Implements hook_paranoia_hide_permissions().
  * On behalf of googleanalytics.module.
  */
-function google_analytics_paranoia_hide_permissions() {
+function googleanalytics_paranoia_hide_permissions() {
   return array('use PHP for tracking visibility');
 }
 
