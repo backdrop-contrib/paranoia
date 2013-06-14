@@ -115,13 +115,23 @@ function paranoia_permissions_validate($form, &$form_state) {
 }
 
 /**
- * Remove extremely-risky permissions from any role.
+ * Helper function to remove all risky permissions from any role.
+ *
+ * Separated out from paranoia_permissions_submit so that there is
+ * clearly no dependency on a form or form state.
  */
-function paranoia_permissions_submit($form, &$form_state) {
+function _paranoia_remove_risky_permissions() {
   $banned_permissions = module_invoke_all('paranoia_hide_permissions');
   foreach ($banned_permissions as $permission) {
     db_query("DELETE FROM {role_permission} WHERE permission = :permission", array(':permission' => $permission));
   }
+}
+
+/**
+ * Remove extremely-risky permissions from any role.
+ */
+function paranoia_permissions_submit($form, &$form_state) {
+  _paranoia_remove_risky_permissions();
 }
 
 /**
