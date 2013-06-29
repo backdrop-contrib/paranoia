@@ -195,3 +195,12 @@ function googleanalytics_paranoia_hide_permissions() {
 function bueditor_paranoia_hide_permissions() {
   return array('administer bueditor');
 }
+
+/**
+ * Implements hook_paranoia_hide_permissions().
+ * On behalf of auto_nodetitle.module.
+ */
+function auto_nodetitle_paranoia_hide_permissions() {
+  return array('use PHP for title patterns');
+}
+
