@@ -234,3 +234,19 @@ function paranoia_module_validate($form, &$form_state) {
     }
   }
 }
+
+/**
+ * Implements hook_paranoia_hide_permissions().
+ * On behalf of visual_website_optimizer.module.
+ */
+function visual_website_optimizer_paranoia_hide_permissions() {
+  return array('use PHP for filtering condition');
+}
+
+/**
+  * Implements hook_paranoia_hide_permissions().
+  * On behalf of live_person.module.
+  */
+function live_person_paranoia_hide_permissions() {
+  return array('use PHP for live person visibility');
+}
