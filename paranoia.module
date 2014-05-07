@@ -41,7 +41,6 @@ function paranoia_form_views_ui_config_item_form_alter(&$form, &$form_state) {
     $form['options']['vbo']['operations']['action::views_bulk_operations_script_action']['selected']['#default_value'] = FALSE;
     $form['options']['vbo']['operations']['action::views_bulk_operations_script_action']['selected']['#value'] = FALSE;
     $form['options']['vbo']['operations']['action::views_bulk_operations_script_action']['selected']['#disabled'] = TRUE;
-
   }
 }
 
