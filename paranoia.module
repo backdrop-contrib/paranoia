@@ -156,15 +156,6 @@ function paranoia_paranoia_hide_modules() {
 /**
  * Implements hook_paranoia_hide_permissions().
  *
- * On behalf of rules.module.
- */
-function rules_paranoia_hide_permissions() {
-  return array('bypass rules access');
-}
-
-/**
- * Implements hook_paranoia_hide_permissions().
- *
  * On behalf of cck.module.
  */
 function cck_paranoia_hide_permissions() {
