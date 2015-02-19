@@ -234,6 +234,6 @@ function live_person_paranoia_hide_permissions() {
  * Implements hook_paranoia_hide_permissions().
  * On behalf of auto_entitylabel.module.
  */
-function auto_entitylabel_hide_permission() {
+function auto_entitylabel_paranoia_hide_permissions() {
   return array('use PHP for label patterns');
 }
