@@ -44,3 +44,10 @@ function paranoia_requirements($phase) {
   }
   return $requirements;
 }
+
+/**
+ * Implements hook_modules_enabled().
+ */
+function paranoia_modules_enabled($modules) {
+  _paranoia_remove_risky_permissions();
+}
