@@ -215,6 +215,15 @@ function paranoia_module_validate($form, &$form_state) {
 /**
  * Implements hook_paranoia_hide_permissions().
  *
+ * On behalf of service_links.module.
+ */
+function service_links_paranoia_hide_permissions() {
+  return array('use PHP for service visibility');
+}
+
+/**
+ * Implements hook_paranoia_hide_permissions().
+ *
  * On behalf of visual_website_optimizer.module.
  */
 function visual_website_optimizer_paranoia_hide_permissions() {
