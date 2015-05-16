@@ -248,6 +248,17 @@ function service_links_paranoia_hide_permissions() {
 /**
  * Implements hook_paranoia_hide_permissions().
  *
+ * On behalf of auto_username.module.
+ */
+function auto_username_paranoia_hide_permissions() {
+  return array('use PHP for username patterns');
+}
+
+
+
+/**
+ * Implements hook_paranoia_hide_permissions().
+ *
  * On behalf of visual_website_optimizer.module.
  */
 function visual_website_optimizer_paranoia_hide_permissions() {
