@@ -10,6 +10,20 @@
  */
 
 /**
+ * Implements hook_menu_alter().
+ *
+ * Disable specific menu paths.
+ */
+function paranoia_menu_alter(&$items) {
+  $hidden_paths = module_invoke_all('paranoia_hide_paths');
+  foreach ($hidden_paths as $path) {
+    if (isset($items[$path])) {
+      $items[$path]['access callback'] = FALSE;
+    }
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  *
  * Hide Paranoia and PHP modules from module admin form.
@@ -264,4 +278,22 @@ function auto_entitylabel_paranoia_hide_permissions() {
  */
 function ctools_paranoia_hide_permissions() {
   return array('use ctools import');
+}
+
+/**
+ * Implements hook_paranoia_hide_paths().
+ *
+ * On behalf of devel.module
+ */
+function devel_paranoia_hide_paths() {
+  return array('devel/php');
+}
+
+/**
+ * Implements hook_paranoia_hide_paths().
+ *
+ * On behalf of views.module
+ */
+function views_paranoia_hide_paths() {
+  return array('admin/structure/views/import');
 }
