@@ -46,6 +46,28 @@ function paranoia_form_system_modules_alter(&$form, &$form_state) {
 }
 
 /**
+ * Custom validation function to make sure no banned modules were enabled.
+ */
+function paranoia_module_validate($form, &$form_state) {
+  paranoia_remove_disabled_modules();
+}
+
+/**
+ * Disables modules based on the list in hook_paranoia_disable_modules().
+ *
+ */
+function paranoia_remove_disabled_modules() {
+  $disabled_modules = module_invoke_all('paranoia_disable_modules');
+  foreach ($disabled_modules as $module) {
+    if (module_exists($module)) {
+      drupal_set_message(t('The module %module has been disabled as it is not allowed on this site.',
+        array('%module' => $module)));
+      module_disable(array($module));
+    }
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  *
  * Disable executing PHP setting in VBO.
@@ -111,7 +133,6 @@ function paranoia_permissions_validate($form, &$form_state) {
       if (!empty($form_state['values'][2][$machine_name])) {
         form_set_error('2][' . $machine_name, t('The permission %name can affect site security and should not be granted to authenticated users.', array('%name' => $attributes['title'])));
       }
-
     }
   }
 }
@@ -143,6 +164,8 @@ function paranoia_paranoia_disable_modules() {
   return array(
     'php',
     'ds_format',
+    'skinr_ui',
+    'skinr_context_ui',
   );
 }
 
@@ -211,28 +234,6 @@ function bueditor_paranoia_hide_permissions() {
  */
 function auto_nodetitle_paranoia_hide_permissions() {
   return array('use PHP for title patterns');
-}
-
-/**
- * Custom validation function to make sure no banned modules were enabled.
- */
-function paranoia_module_validate($form, &$form_state) {
-  paranoia_remove_disabled_modules();
-}
-
-/**
- * Disables modules based on the list in hook_paranoia_disable_modules().
- *
- */
-function paranoia_remove_disabled_modules() {
-  $disabled_modules = module_invoke_all('paranoia_disable_modules');
-  foreach ($disabled_modules as $module) {
-    if (module_exists($module)) {
-      drupal_set_message(t('The module %module has been disabled as it is not allowed on this site.',
-        array('%module' => $module)));
-      module_disable(array($module));
-    }
-  }
 }
 
 /**
