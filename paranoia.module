@@ -54,7 +54,6 @@ function paranoia_module_validate($form, &$form_state) {
 
 /**
  * Disables modules based on the list in hook_paranoia_disable_modules().
- *
  */
 function paranoia_remove_disabled_modules() {
   $disabled_modules = module_invoke_all('paranoia_disable_modules');
@@ -253,8 +252,6 @@ function service_links_paranoia_hide_permissions() {
 function auto_username_paranoia_hide_permissions() {
   return array('use PHP for username patterns');
 }
-
-
 
 /**
  * Implements hook_paranoia_hide_permissions().
