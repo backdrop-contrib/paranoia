@@ -10,11 +10,11 @@
  */
 function paranoiasanitize_drush_command() {
   return array(
-    'paranoia-sql-sanitize-whitelist' => array(
-      'description' => dt('Sanitizes (deletes or munges) data by default. Can be configured to do less.'),
-    ),
     'paranoia-build-sanitize-whitelist' => array(
       'description' => dt('Helps you build an initial whitelist. If it provides advice for a contrib, please post that as an issue on drupal.org.'),
+    ),
+    'paranoia-sql-sanitize-whitelist' => array(
+      'description' => dt('Sanitizes (deletes or munges) data by default. Can be configured to do less.'),
     ),
   );
 }
@@ -47,7 +47,7 @@ function drush_paranoiasanitize_paranoia_build_sanitize_whitelist() {
       $tables_by_module[$schema[$table]['module']][] = $table;
     }
     else {
-      $tables_by_module['_tables_not_in_schema'][] = $table;
+      $tables_by_module['PARANOIA_UNKNOWN'][] = $table;
     }
   }
   ksort($tables_by_module);
@@ -56,47 +56,47 @@ function drush_paranoiasanitize_paranoia_build_sanitize_whitelist() {
   $whitelist_hooks = '';
   foreach ($tables_by_module as $module => $table_list) {
     if (function_exists($module . '_paranoiasanitize_sql_sanitize_operations')) {
-      drush_log(dt("A function exists for '@module', review the settings and consider if you want to override them.", array('@module' => $module)), 'warning');
+      drush_log(dt("@module_paranoiasanitize_sql_sanitize_operations exists for @module.module, review that function and consider modifying or overriding it.", array('@module' => $module)), 'warning');
       continue;
     }
-    if (!empty($whitelist_hooks)) {
-      $whitelist_hooks .= PHP_EOL . '  );' . PHP_EOL . '}' . PHP_EOL;
-    }
     $whitelist_hooks .= PHP_EOL . "/**
-* Implements hook_paranoiasanitize_sql_sanitize_operations().
-*/
+ * Implements hook_paranoiasanitize_sql_sanitize_operations().
+ */
 function {$module}_paranoiasanitize_sql_sanitize_operations() {" . PHP_EOL;
     $whitelist_hooks .= '  return array(';
     foreach ($table_list as $table) {
       $count = db_query("SELECT COUNT(1) FROM " . $table)->fetchField();
-      $columns = implode("', '", _paranoiasanitize_get_columns($table));
+      $columns = implode("',
+        '", _paranoiasanitize_get_columns($table));
       // If the table is currently empty, suggest it be made empty.
-      if (0 == $count) {
-        $whitelist_hooks .= "
+      $empty_query = $count == 0 ? "'TRUNCATE {$table}'" : "";
+      $whitelist_hooks .= "
     '$table' => array(
-      'queries' => array('TRUNCATE {$table}'),
-      'fields' => array('$columns'),
+      'queries' => array($empty_query),
+      'fields' => array(
+        '$columns',
+       ),
     ),";
-      }
-      // If it has data, suggest leaving alone. The site builder should review
-      // and change this to fix it, ideally.
-      else {
-        $whitelist_hooks .= PHP_EOL . "    '$table' => array(
-      'queries' => array(''),
-      'fields' => array('$columns'),
-    ),";
-      }
+    }
+    if (!empty($whitelist_hooks)) {
+      $whitelist_hooks .= PHP_EOL . '  );' . PHP_EOL . '}' . PHP_EOL;
     }
   }
 
-  // If we created any output, close it off properly and print it.
+  // If there is any output print it.
   if (!empty($whitelist_hooks)) {
-    $whitelist_hooks .= PHP_EOL . '  );' . PHP_EOL . '}' . PHP_EOL;
-    echo PHP_EOL . $whitelist_hooks . PHP_EOL;
-    if (array_key_exists('_tables_not_in_schema', $tables_by_module)) {
-      drush_log(dt("Your site has @count table(s) that are not associated with a hook_schema from a module currently enabled on the site. These tables have been added to a hook '_tables_not_in_schema_paranoiasanitize_sql_sanitize_operations'. You should rename that function to match some real module on your site so that function will actually get called.",
-        array('@count' => count($tables_by_module['_tables_not_in_schema']))), 'warning');
+    if (array_key_exists('PARANOIA_UNKNOWN', $tables_by_module)) {
+      drush_log(dt("Your site has @count table(s) that are not associated with a hook_schema from a module currently enabled on the site. These tables have been added to a hook 'PARANOIA_UNKNOWN_paranoiasanitize_sql_sanitize_operations'. You should rename that function to match some real module on your site so that function will actually get called.",
+        array('@count' => count($tables_by_module['PARANOIA_UNKNOWN']))), 'warning');
     }
+    // Since there are likely relevant error messages above and this message
+    // is long, prompt them to be sure they are ready to read it.
+    if (!drush_confirm(dt('Your hooks are built. Please read any messages above and press Y to continue.'))) {
+      drush_die('Exiting');
+    }
+
+    drush_print($whitelist_hooks);
+
     drush_log(dt('You can copy and paste that blob into a site-specific module or, ideally, help contrib authors by contributing this hook to their module.'), 'success');
   }
   else {

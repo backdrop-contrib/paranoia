@@ -2,13 +2,10 @@
 
 /**
  * @file
- * Contains EmailRegistrationTestCase.
+ * Contains ParanoiaSanitizeTestCase.
  */
 
 class ParanoiaSanitizeTestCase extends DrupalWebTestCase {
-  /**
-   * Implementation of getInfo().
-   */
   public static function getInfo() {
     return array(
       'name' => t('Paranoia sanitize.'),
@@ -17,9 +14,6 @@ class ParanoiaSanitizeTestCase extends DrupalWebTestCase {
     );
   }
 
-  /**
-   * Implementation of setUp().
-   */
   public function setUp() {
     parent::setUp('paranoiasanitize');
   }
@@ -97,7 +91,7 @@ class ParanoiaSanitizeTestCase extends DrupalWebTestCase {
       array(
         'original' => 'yes_prefix_table',
         'prefixed' => 'yes_yes_prefix_table',
-        'description' => t('Table without prefix stays without prefix'),
+        'description' => t('Table with prefix gets the prefix'),
       ),
     );
 
@@ -123,7 +117,7 @@ class ParanoiaSanitizeTestCase extends DrupalWebTestCase {
       array(
         'original' => 'yes_prefix_table',
         'prefixed' => 'yes_yes_prefix_table',
-        'description' => t('Table without prefix stays without prefix'),
+        'description' => t('Table with prefix gets the prefix'),
       ),
     );
 
