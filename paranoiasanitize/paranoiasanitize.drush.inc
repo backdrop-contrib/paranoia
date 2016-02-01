@@ -148,7 +148,6 @@ function drush_paranoiasanitize_paranoia_sql_sanitize_whitelist() {
     if (function_exists($function)) {
       $result = call_user_func_array($function, array());
       foreach ($result as $table_name => $actions) {
-        $table_name = _paranoiasanitize_apply_db_prefix($table_name, $databases);
         // TODO: it could be valuable to try to merge together values if not
         // all columns are covered. Perhaps two implementations together get
         // to a valid set of queries.
