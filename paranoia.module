@@ -1,12 +1,10 @@
 <?php
 /**
  * @file
- * - Disables PHP block visibility permission and gives status error if a role
- *   has this permission.
- * - Disables the PHP module.
- * - Hides the PHP and paranoia modules from the modules page.
- * - Prevents user/1 editing which could give access to arbitrary contrib module
- *   PHP execution.
+ * - Disables risky permissions in various contributed modules.
+ * - Hides the paranoia module from the modules page.
+ * - Prevents user/1 editing which could give access to arbitrary
+ *   contributed module PHP execution.
  */
 
 /**
