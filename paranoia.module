@@ -5,8 +5,8 @@
  *   has this permission.
  * - Disables the PHP module.
  * - Hides the PHP and paranoia modules from the modules page.
- * - Prevents user/1 editing which could give access to abitrary contrib module
- *   php execution.
+ * - Prevents user/1 editing which could give access to arbitrary contrib module
+ *   PHP execution.
  */
 
 /**
@@ -59,7 +59,7 @@ function paranoia_remove_disabled_modules() {
   $disabled_modules = module_invoke_all('paranoia_disable_modules');
   foreach ($disabled_modules as $module) {
     if (module_exists($module)) {
-      drupal_set_message(t('The module %module has been disabled as it is not allowed on this site.',
+      backdrop_set_message(t('The module %module has been disabled as it is not allowed on this site.',
         array('%module' => $module)));
       module_disable(array($module));
     }
@@ -88,7 +88,7 @@ function paranoia_user_update(&$edit, $account, $category) {
     isset($account->original->pass) &&
     $account->original->pass != $account->pass) {
     // Confirm a db based session destruction is going to work.
-    if (variable_get('session_inc', 'includes/session.inc') == 'includes/session.inc') {
+    if (settings_get('session_inc', 'core/includes/session.inc') == 'core/includes/session.inc') {
       // Destroy all sessions.
       db_delete('sessions')
         ->condition('uid', $account->uid, '=')
@@ -110,7 +110,7 @@ function paranoia_form_user_profile_form_alter(&$form, &$form_state) {
     global $user;
     // Allow user/1 to edit own details.
     if ($user->uid != 1) {
-      drupal_set_message(t('You must login as this user (user/1) to modify the name, email address, and password for this account.'), 'warning');
+      backdrop_set_message(t('You must login as this user (user/1) to modify the name, email address, and password for this account.'), 'warning');
       $form['account']['name']['#access'] = FALSE;
       $form['account']['mail']['#access'] = FALSE;
       $form['account']['pass']['#access'] = FALSE;
@@ -168,7 +168,14 @@ function paranoia_permissions_validate($form, &$form_state) {
 function _paranoia_remove_risky_permissions() {
   $banned_permissions = module_invoke_all('paranoia_hide_permissions');
   foreach ($banned_permissions as $permission) {
-    db_query("DELETE FROM {role_permission} WHERE permission = :permission", array(':permission' => $permission));
+    $tainted_roles = user_roles(FALSE, $permission, TRUE);
+    foreach ($tainted_roles as $role) {
+      $risky_permission_key = array_search($permission, $role->permissions, TRUE);
+      unset($role->permissions[$risky_permission_key]);
+      // Reset the array keys to be sure they are sequential.
+      sort($role->permissions, SORT_STRING);
+      user_role_save($role);
+    }
   }
 }
 
@@ -184,22 +191,16 @@ function paranoia_permissions_submit($form, &$form_state) {
  */
 function paranoia_paranoia_disable_modules() {
   return array(
-    'php',
-    'ds_format',
-    'skinr_ui',
-    'skinr_context_ui',
   );
 }
 
 /**
  * Implements hook_paranoia_hide_permissions().
  *
- * On behalf of Drupal Core.
+ * On behalf of Backdrop Core.
  */
 function paranoia_paranoia_hide_permissions() {
   return array(
-    'use PHP for settings',
-    'use text format php_code',
   );
 }
 
@@ -208,18 +209,8 @@ function paranoia_paranoia_hide_permissions() {
  */
 function paranoia_paranoia_hide_modules() {
   return array(
-    'php' => 'Core',
     'paranoia' => 'Other',
   );
-}
-
-/**
- * Implements hook_paranoia_hide_permissions().
- *
- * On behalf of cck.module.
- */
-function cck_paranoia_hide_permissions() {
-  return array('Use PHP input for field settings (dangerous - grant with care)');
 }
 
 /**
@@ -304,30 +295,12 @@ function auto_entitylabel_paranoia_hide_permissions() {
 }
 
 /**
- * Implements hook_paranoia_hide_permissions().
- *
- * On behalf of ctools.module.
- */
-function ctools_paranoia_hide_permissions() {
-  return array('use ctools import');
-}
-
-/**
  * Implements hook_paranoia_hide_paths().
  *
  * On behalf of devel.module
  */
 function devel_paranoia_hide_paths() {
   return array('devel/php');
-}
-
-/**
- * Implements hook_paranoia_hide_paths().
- *
- * On behalf of views.module
- */
-function views_paranoia_hide_paths() {
-  return array('admin/structure/views/import');
 }
 
 /**
@@ -338,11 +311,11 @@ function views_paranoia_hide_paths() {
  */
 function paranoia_form_alter(&$form, &$form_state, $form_id) {
   $forms_to_disable = module_invoke_all('paranoia_risky_forms');
-  $forms_to_disable = drupal_map_assoc($forms_to_disable);
+  $forms_to_disable = backdrop_map_assoc($forms_to_disable);
   if (array_key_exists($form_id, $forms_to_disable)) {
     $form['#access'] = FALSE;
     $form['#validate'] = 'paranoia_form_validate_always_fail';
-    drupal_set_message(t('This form is disabled for security reasons. See <a href="https://www.drupal.org/node/2313945">details</a> on why this form is disabled.'), 'error');
+    backdrop_set_message(t('This form is disabled for security reasons. See <a href="https://www.drupal.org/node/2313945">details</a> on why this form is disabled.'), 'error');
   }
 }
 
@@ -351,13 +324,4 @@ function paranoia_form_alter(&$form, &$form_state, $form_id) {
  */
 function paranoia_form_validate_always_fail() {
   form_set_error('', t('This form is disabled for security reasons. See <a href="https://www.drupal.org/node/2313945">details</a> on why this form is disabled.'));
-}
-
-/**
- * Implements paranoia_risky_forms().
- *
- * On behalf of views module.
- */
-function views_paranoia_risky_forms() {
-  return array('views_ui_import_page');
 }
