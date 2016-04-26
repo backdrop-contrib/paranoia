@@ -33,8 +33,8 @@ Current Maintainer
 
 - David Norman (https://github.com/deekayen)
 
-Maintainers
------------
+Credits
+-------
 
 - Originally written for Drupal by Gerhard Killesreiter and
   Greg Knaddison @greggles
