@@ -147,11 +147,11 @@ function paranoia_permissions_validate($form, &$form_state) {
   $permissions = module_invoke_all('permission');
   foreach ($permissions as $machine_name => $attributes) {
     if (!empty($attributes['restrict access'])) {
-      if (!empty($form_state['values'][1][$machine_name])) {
-        form_set_error('1][' . $machine_name, t('The permission %name can affect site security and should not be granted to anonymous users.', array('%name' => $attributes['title'])));
+      if (!empty($form_state['values']['anonymous'][$machine_name])) {
+        form_set_error('anonymous[' . $machine_name, t('%name can affect site security and should not be granted to anonymous users.', array('%name' => $attributes['title'])));
       }
-      if (!empty($form_state['values'][2][$machine_name])) {
-        form_set_error('2][' . $machine_name, t('The permission %name can affect site security and should not be granted to authenticated users.', array('%name' => $attributes['title'])));
+      if (!empty($form_state['values']['authenticated'][$machine_name])) {
+        form_set_error('authenticated[' . $machine_name, t('%name can affect site security and should not be granted to authenticated users.', array('%name' => $attributes['title'])));
       }
     }
   }

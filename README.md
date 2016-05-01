@@ -9,8 +9,6 @@ What it does:
 -------------
 
 - Save the permissions form once to remove all previous grants.
-  (An error appears in the site status report if a role still has this
-  permission.)
 - Disable granting to Anonymous or Authenticated any permission that is
   marked "restrict access" in a module's hook_permission.
 - Disable granting several permissions from popular contributed modules
