@@ -1,9 +1,7 @@
-Description:
-===========
+Paranoia
+========
 
-Paranoia module is for all the sysadmins out there who think that
-allowing random CMS admins to execute PHP of their choice is not
-a safe idea.
+Impose additional restrictions on the granting of elevated privileges to anonymous and authenticated user roles.
 
 What it does:
 -------------
@@ -20,9 +18,7 @@ What it does:
 NOTE on disabling:
 ------------------
 
-The only way to disable paranoia module is by changing its status in the
-database system table.  By design it does not show up in the module
-administration page after it is enabled.
+The only way to disable paranoia module is by changing its status in the database system table. By design it does not show up in the module administration page after it is enabled.
 
 `UPDATE system SET status = 0 WHERE name = 'paranoia';`
 
@@ -35,7 +31,7 @@ Credits
 -------
 
 - Originally written for Drupal by Gerhard Killesreiter and
-  Greg Knaddison @greggles
+  Greg Knaddison (https://github.com/greggles)
 - Ported to Backdrop by David Norman (https://github.com/deekayen)
 
 License
