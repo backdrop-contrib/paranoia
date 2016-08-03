@@ -79,6 +79,8 @@ function paranoia_form_views_ui_config_item_form_alter(&$form, &$form_state) {
 
 /**
  * Implements hook_user_update().
+ *
+ * Deletes all sessions except for the one that changed the password.
  */
 function paranoia_user_update($account) {
   // If they are changing their password.
