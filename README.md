@@ -14,6 +14,8 @@ What it does:
 - Remove the paranoia module from the module administration page.
 - Provides a hook to let you remove other modules from the module
   administration page.
+- When changing your password, it destroys all sessions other than the
+  session used to change the password.
 
 NOTE on disabling:
 ------------------
