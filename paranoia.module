@@ -80,7 +80,7 @@ function paranoia_form_views_ui_config_item_form_alter(&$form, &$form_state) {
 /**
  * Implements hook_user_update().
  */
-function paranoia_user_update(&$edit, $account, $category) {
+function paranoia_user_update($account) {
   // If they are changing their password.
   if (isset($account->pass) && isset($account->original) &&
     isset($account->original->pass) &&
