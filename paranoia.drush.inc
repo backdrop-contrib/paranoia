@@ -20,7 +20,7 @@ function paranoia_drush_sql_sync_sanitize($site) {
   // The intent is to remove things like API keys or credentials for services.
   drush_sql_register_post_sync_op('variable_keys',
     dt('Remove variables that contain names that indicate potential sensitive data.'),
-    "DELETE FROM variable WHERE name LIKE '%key%';");
+    "DELETE FROM variable WHERE name LIKE '%key%' OR name LIKE '%token%';");
   drush_sql_register_post_sync_op('history',
     dt('Remove history, which contains info on where users have browsed on a site.'),
     "TRUNCATE history;");
