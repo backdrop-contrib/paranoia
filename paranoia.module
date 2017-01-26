@@ -132,7 +132,7 @@ function paranoia_form_user_admin_permissions_alter(&$form, &$form_state) {
     }
     foreach ($form['checkboxes'] as $index => $elements) {
       if (isset($elements['#options'][$permission])) {
-        unset($form['checkboxes'][$index]['#options'][$permission]);
+        $form['checkboxes'][$index][$permission]['#access'] = FALSE;
       }
     }
   }
