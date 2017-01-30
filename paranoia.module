@@ -361,3 +361,12 @@ function paranoia_form_validate_always_fail() {
 function views_paranoia_risky_forms() {
   return array('views_ui_import_page');
 }
+
+/**
+ * Implements paranoia_risky_forms().
+ *
+ * On behalf of devel module.
+ */
+function devel_paranoia_risky_forms() {
+  return array('devel_execute_block_form');
+}
