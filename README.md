@@ -27,7 +27,7 @@ The only way to disable paranoia module is by changing its status in the databas
 Current Maintainer
 ------------------
 
-- David Norman (https://github.com/deekayen)
+- None
 
 Credits
 -------
