@@ -93,6 +93,9 @@ function paranoia_drush_command() {
   return array(
     'paranoia-reset-stale-accounts' => array(
       'description' => dt('Queue accounts to have their passwords reset if they have not logged in recently.'),
+      'options' => array(
+        'limit' => dt('Limit the number of accounts to queue in one run.'),
+      ),
     ),
   );
 }
@@ -102,6 +105,7 @@ function paranoia_drush_command() {
  */
 function drush_paranoia_reset_stale_accounts() {
   $queue = DrupalQueue::get('paranoia_stale_expirations');
+  $limit = drush_get_option('limit', FALSE);
 
   // Don't add to the queue if there are remaining items to be processed, to
   // avoid duplicate queue items if the cron queue iterator from a previous
@@ -114,7 +118,17 @@ function drush_paranoia_reset_stale_accounts() {
   // Check for accounts whose last access time is older than the threshold,
   // which defaults to 2 years (365 * 2 = 730 days).
   $offset = REQUEST_TIME - (variable_get('paranoia_access_threshold', 730) * 60 * 60 * 24);
-  $result = db_query("SELECT uid FROM {users} WHERE uid > 0 AND access > 0 AND access < :offset AND pass NOT LIKE 'ZZZ%'", array(':offset' => $offset));
+  $query = db_select('users', 'u')
+    ->fields('u', ['uid'])
+    ->condition('uid', 0, '>')
+    ->condition('created', $offset, '<')
+    ->condition('access', $offset, '<')
+    ->condition('login', $offset, '<')
+    ->condition('pass', 'ZZZ%', 'NOT LIKE');
+  if ($limit !== FALSE) {
+    $query->range($limit);
+  }
+  $result = $query->execute();
 
   $count = 0;
   foreach ($result as $record) {
