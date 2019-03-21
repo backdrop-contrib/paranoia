@@ -48,8 +48,12 @@ NOTE on disabling:
 =====
 The only way to disable paranoia module is by changing its status in the
 database system table.  By design it does not show up in the module
-administration page after it is enabled. You can also disable it with drush:
+administration page after it is enabled.
 
+You can disable it with a database query:
+UPDATE system SET status = 0 WHERE name = 'paranoia';
+
+Or you can disable it with drush:
 drush dis paranoia
 
 Support
