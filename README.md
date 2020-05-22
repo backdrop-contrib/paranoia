@@ -27,14 +27,15 @@ The only way to disable paranoia module is by changing its status in the databas
 Current Maintainer
 ------------------
 
-- None
+- [Laryn Kragt Bakker](https://github.com/laryn), [CEDC.org](https://CEDC.org)
+- Collaboration and co-maintainers welcome!
 
 Credits
 -------
 
 - Originally written for Drupal by Gerhard Killesreiter and
-  Greg Knaddison (https://github.com/greggles)
-- Ported to Backdrop by David Norman (https://github.com/deekayen)
+  [Greg Knaddison](https://github.com/greggles)
+- Ported to Backdrop by [David Norman](https://github.com/deekayen)
 
 License
 -------
