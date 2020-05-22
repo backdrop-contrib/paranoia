@@ -21,6 +21,7 @@ function paranoia_enable() {
   _paranoia_remove_risky_permissions();
   $t = get_t();
   backdrop_set_message($t('Risky permissions have been automatically disabled.'));
+  backdrop_set_message($t('Due to the nature of the Paranoia module, it cannot be disabled through the UI. <a href="@url">More info here</a>.', array('@url' => url('https://github.com/backdrop-contrib/paranoia'))), 'info');
 }
 
 /**
@@ -28,4 +29,19 @@ function paranoia_enable() {
  */
 function paranoia_modules_enabled($modules) {
   _paranoia_remove_risky_permissions();
+}
+
+/**
+ * Move paranoia settings from variables to config.
+ */
+function paranoia_update_1000() {
+  // Migrate variables to config.
+  $config = config('paranoia.settings');
+  $config->set('email_notification', update_variable_get('paranoia_email_notification', 730));
+  $config->set('access_threshold', update_variable_get('paranoia_access_threshold', FALSE));
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('paranoia_email_notification');
+  update_variable_del('paranoia_access_threshold');
 }

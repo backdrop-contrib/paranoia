@@ -1,0 +1,5 @@
+{
+    "_config_name": "paranoia.settings",
+    "access_threshold": "730",
+    "email_notification": 0
+}
