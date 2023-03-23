@@ -1,7 +1,8 @@
 Paranoia
 ========
 
-Impose additional restrictions on the granting of elevated privileges to anonymous and authenticated user roles.
+Impose additional restrictions on the granting of elevated privileges to
+anonymous and authenticated user roles.
 
 What it does:
 -------------
@@ -20,9 +21,17 @@ What it does:
 NOTE on disabling:
 ------------------
 
-The only way to disable paranoia module is by changing its status in the database system table. By design it does not show up in the module administration page after it is enabled.
-
-`UPDATE system SET status = 0 WHERE name = 'paranoia';`
+The Paranoia module cannot be disabled within the user interface; by design it
+does not show up in the module administration page after it is enabled. The
+module can be disabled in one of two ways:
+1. Changing the module status in the database `system` table:
+```sql
+    UPDATE system SET status = 0 WHERE name = 'paranoia';
+```
+2. Use [Bee](https://github.com/backdrop-contrib/bee), the Backdrop command line tool, to disable the module:
+```
+    bee disable paranoia
+```
 
 Current Maintainer
 ------------------
